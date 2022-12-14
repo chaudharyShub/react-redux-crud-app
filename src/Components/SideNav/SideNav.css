@@ -1,0 +1,29 @@
+.sidenav_main {
+    height: 100%;
+    width: 100%;
+}
+
+.side_list_container {
+    padding: 2em 0 0 0;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.side_list_container li {
+    list-style: none;
+    width: 100%;
+}
+
+.side_list_container a {
+    color: #fff;
+    width: 90%;
+    margin: 0 7px;
+    padding: 10px;
+    border: 0;
+    transition: 0.2s ease;
+    text-decoration: none;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+}

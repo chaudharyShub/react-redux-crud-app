@@ -1,0 +1,16 @@
+.add_button {
+    display: flex;
+    justify-content: space-between;
+}
+
+.edit_delete_btn {
+    width: 10em;
+}
+
+.company_name {
+    text-transform: capitalize;
+}
+
+.company_user_name {
+    text-transform: capitalize;
+}

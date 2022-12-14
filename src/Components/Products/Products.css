@@ -1,0 +1,11 @@
+.product_name {
+    text-transform: capitalize;
+}
+
+.product_company_name {
+    text-transform: capitalize;
+}
+
+.product_model {
+    text-transform: capitalize;
+}
