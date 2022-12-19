@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addCompanyToArray } from '../../Redux/actions';
 
 
-function DataModalCompany({ showModal, setShowModal, modalDetails, setModalDetails, modalState, setModalState }) {
+function ModalCompany({ showModal, setShowModal, modalDetails, setModalDetails, isEditing, setIsEditing }) {
 
     const selector = useSelector(state => state);
     const dispatch = useDispatch();
@@ -19,13 +19,13 @@ function DataModalCompany({ showModal, setShowModal, modalDetails, setModalDetai
 
     const handleClose = () => {
         setShowModal(false);
-        setModalState(false);
+        setIsEditing(false);
         setModalDetails({});
     }
 
     useEffect(() => {
-        if (modalState) setDetails(modalDetails);
-    }, [modalState]);
+        if (isEditing) setDetails(modalDetails);
+    }, [isEditing]);
 
     const handleSubmit = (event) => {
         const form = event.currentTarget;
@@ -35,7 +35,7 @@ function DataModalCompany({ showModal, setShowModal, modalDetails, setModalDetai
             setValidated(true);
             return;
         }
-        else if (modalState) {
+        else if (isEditing) {
             setTimeout(() => {
                 const index = companies.findIndex(items => items.uniqueId === details.uniqueId);
                 companies.splice(index, 1, details);
@@ -95,7 +95,7 @@ function DataModalCompany({ showModal, setShowModal, modalDetails, setModalDetai
                             errorMsg='Please enter valid email'
                         />
                         <Button variant="primary" type='submit'>
-                            {modalState ? 'Update' : 'Save Changes'}
+                            {isEditing ? 'Update' : 'Save Changes'}
                         </Button>
                         <Button className='mx-3' variant="secondary" onClick={handleClose}>
                             Close
@@ -107,4 +107,4 @@ function DataModalCompany({ showModal, setShowModal, modalDetails, setModalDetai
     );
 }
 
-export default DataModalCompany;
+export default ModalCompany;

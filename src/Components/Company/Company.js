@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Table, Container } from 'react-bootstrap';
-import DataModalCompany from './DataModalCompany';
-import './Company.css';
+import ModalCompany from './ModalCompany';
 import { useDispatch, useSelector } from 'react-redux';
-import { addCompanyToArray, addProductToArray, getCompanyDataFromLocalStorage } from '../../Redux/actions';
+import { addProductToArray, getCompanyDataFromLocalStorage } from '../../Redux/actions';
+import './Company.css';
 
 
 function Company() {
@@ -15,7 +15,7 @@ function Company() {
 
     const [showModal, setShowModal] = useState(false);
     const [modalDetails, setModalDetails] = useState(null);
-    const [modalState, setModalState] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
 
     useEffect(() => {
         getCompanyDataFromLocalStorage(dispatch);
@@ -23,8 +23,9 @@ function Company() {
 
     const handleEdit = uniqueId => {
         const object = companies.find(items => uniqueId === items.uniqueId);
+        if (!object) return;
         setModalDetails(object);
-        setModalState(true);
+        setIsEditing(true);
         setShowModal(true);
     }
 
@@ -38,13 +39,13 @@ function Company() {
     return (
         <div className='company_main'>
             {
-                showModal ? <DataModalCompany
+                showModal ? <ModalCompany
                     showModal={showModal}
                     setShowModal={setShowModal}
                     modalDetails={modalDetails}
-                    modalState={modalState}
+                    isEditing={isEditing}
                     setModalDetails={setModalDetails}
-                    setModalState={setModalState}
+                    setIsEditing={setIsEditing}
                 /> : null
             }
             <Container>
@@ -54,32 +55,36 @@ function Company() {
                         Add
                     </Button>
                 </div>
-                <Table striped bordered hover className='company_table'>
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Company Name</th>
-                            <th>Username</th>
-                            <th>Email</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {companies?.map((company, index) => {
-                            return (
-                                <tr key={company.uniqueId}>
-                                    <td>{index + 1}</td>
-                                    <td className='company_name'>{company.companyName}</td>
-                                    <td className='company_user_name'>{company.userName}</td>
-                                    <td>{company.email}</td>
-                                    <td className='edit_delete_btn'>
-                                        <Button className='mx-1' variant="warning" onClick={() => handleEdit(company.uniqueId)}>Edit</Button>
-                                        <Button className='mx-1' variant="danger" onClick={() => handleDelete(company.uniqueId)}>Delete</Button>
-                                    </td>
+                {
+                    companies.length ?
+                        <Table striped bordered hover className='company_table'>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Company Name</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
                                 </tr>
-                            )
-                        })}
-                    </tbody>
-                </Table>
+                            </thead>
+                            <tbody>
+                                {companies.map((company, index) => {
+                                    return (
+                                        <tr key={company.uniqueId}>
+                                            <td>{index + 1}</td>
+                                            <td className='company_name'>{company.companyName}</td>
+                                            <td className='company_user_name'>{company.userName}</td>
+                                            <td>{company.email}</td>
+                                            <td className='edit_delete_btn'>
+                                                <Button className='mx-1' variant="warning" onClick={() => handleEdit(company.uniqueId)}>Edit</Button>
+                                                <Button className='mx-1' variant="danger" onClick={() => handleDelete(company.uniqueId)}>Delete</Button>
+                                            </td>
+                                        </tr>
+                                    )
+                                })}
+                            </tbody>
+                        </Table>
+                        : <h2>Nothing to show !!!</h2>
+                }
             </Container>
         </div>
     );
