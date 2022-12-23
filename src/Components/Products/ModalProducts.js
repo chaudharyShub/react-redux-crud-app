@@ -5,6 +5,7 @@ import uuid from 'react-uuid';
 import FormInputComponent from '../Others/FormInputComponent';
 import 'react-toastify/dist/ReactToastify.css';
 import { addProductToArray } from '../../Redux/actions';
+import close from '../../close.png';
 
 
 function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails, isEditing, setIsEditing }) {
@@ -15,7 +16,6 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
     const [validated, setValidated] = useState(false);
     const [details, setDetails] = useState({});
     const [name, setName] = useState('');
-    const [selectedImagesUrl, setSelectedImagesUrl] = useState([]);
     const [imageFileArray, setImageFileArray] = useState([]);
 
     const products = selector.productReducer.products;
@@ -44,15 +44,6 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
     useEffect(() => {
         if (isEditing) {
             setDetails(modalDetails);
-            const a = [];
-            for (let i = 0; i < modalDetails.imagesArray?.length; i++) {
-                const file = new File([modalDetails.imagesArray], modalDetails.imagesArray[i].name);
-                a.push(file);
-            }
-            const imagesArray = a.map(files => (
-                URL.createObjectURL(files)
-            ));
-            setSelectedImagesUrl(imagesArray);
             setImageFileArray(modalDetails.imagesArray);
         }
         else {
@@ -89,13 +80,7 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
     }
 
     const onSelectFile = e => {
-        const setItems = () => {
-            setImageFileArray(prev => prev.concat(a));
-            const imagesArray = files.map(files => (
-                URL.createObjectURL(files)
-            ));
-            setSelectedImagesUrl(prev => prev.concat(imagesArray));
-        }
+        const setItems = () => setImageFileArray(prev => prev.concat(a));
         const files = Array.from(e.target.files);
         const a = [];
         files.forEach(file => {
@@ -125,10 +110,8 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
     }
 
     const deleteImage = image => {
-        const index = selectedImagesUrl.findIndex(item => item === image);
-        const newArray = selectedImagesUrl.filter(item => item !== image);
+        const index = imageFileArray.findIndex(item => item === image);
         imageFileArray.splice(index, 1);
-        setSelectedImagesUrl(newArray);
         setImageFileArray([...imageFileArray]);
     }
 
@@ -234,11 +217,15 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
 
                     <div className="images_container">
                         {
-                            selectedImagesUrl && selectedImagesUrl.map(image => {
+                            imageFileArray && imageFileArray.map(image => {
                                 return (
-                                    <div className="image" key={image}>
-                                        <img src={image} height='70' />
-                                        <button onClick={() => deleteImage(image)}>Delete</button>
+                                    <div className="image" key={image.name}>
+                                        <p>{image.name.substring(0, 20)}...</p>
+                                        <img
+                                            onClick={() => deleteImage(image)}
+                                            src={close}
+                                            alt="close"
+                                        />
                                     </div>
                                 )
                             })
@@ -250,7 +237,7 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
                             {isEditing ? 'Update' : 'Save Changes'}
                         </Button>
                         <Button className='mx-3' variant="secondary" onClick={handleClose}>
-                            Close
+                            Cancel
                         </Button>
                     </div>
                 </Form>
