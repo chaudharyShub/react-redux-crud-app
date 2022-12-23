@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Form, Modal } from 'react-bootstrap';
+import { Button, Form, InputGroup, Modal } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import uuid from 'react-uuid';
 import FormInputComponent from '../Others/FormInputComponent';
@@ -15,9 +15,12 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
     const [validated, setValidated] = useState(false);
     const [details, setDetails] = useState({});
     const [name, setName] = useState('');
+    const [selectedImagesUrl, setSelectedImagesUrl] = useState([]);
+    const [imageFileArray, setImageFileArray] = useState([]);
 
     const products = selector.productReducer.products;
     const companies = selector.companyReducer.companies;
+
 
     const handleClose = () => {
         setShowModal(false);
@@ -26,7 +29,32 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
     }
 
     useEffect(() => {
-        if (isEditing) setDetails(modalDetails);
+        setName(companies[0]?.companyName);
+    }, []);
+
+    useEffect(() => {
+        if (isEditing) {
+            setDetails(prev => ({
+                ...prev,
+                imagesArray: imageFileArray
+            }))
+        }
+    }, [imageFileArray]);
+
+    useEffect(() => {
+        if (isEditing) {
+            setDetails(modalDetails);
+            const a = [];
+            for (let i = 0; i < modalDetails.imagesArray?.length; i++) {
+                const file = new File([modalDetails.imagesArray], modalDetails.imagesArray[i].name);
+                a.push(file);
+            }
+            const imagesArray = a.map(files => (
+                URL.createObjectURL(files)
+            ));
+            setSelectedImagesUrl(imagesArray);
+            setImageFileArray(modalDetails.imagesArray);
+        }
         else {
             setDetails(prev => ({
                 ...prev,
@@ -37,10 +65,6 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
             }))
         }
     }, [isEditing]);
-
-    useEffect(() => {
-        setName(companies[0]?.companyName);
-    }, []);
 
     const handleChange = e => {
         const { id, value } = e.target;
@@ -64,6 +88,50 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
         }));
     }
 
+    const onSelectFile = e => {
+        const setItems = () => {
+            setImageFileArray(prev => prev.concat(a));
+            const imagesArray = files.map(files => (
+                URL.createObjectURL(files)
+            ));
+            setSelectedImagesUrl(prev => prev.concat(imagesArray));
+        }
+        const files = Array.from(e.target.files);
+        const a = [];
+        files.forEach(file => {
+            const toUplaodImage = {}
+            for (let i in file) {
+                toUplaodImage[i] = file[i]
+            }
+            a.push(toUplaodImage);
+        });
+        if (imageFileArray.length <= 0) setItems();
+        else {
+            const includes = () => {
+                for (let i = 0; i < imageFileArray.length; i++) {
+                    for (let j = 0; j < a.length; j++) {
+                        if (imageFileArray[i].name === a[j].name) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            if (includes()) {
+                alert('Item already exists !');
+                return;
+            }
+            else setItems();
+        }
+    }
+
+    const deleteImage = image => {
+        const index = selectedImagesUrl.findIndex(item => item === image);
+        const newArray = selectedImagesUrl.filter(item => item !== image);
+        imageFileArray.splice(index, 1);
+        setSelectedImagesUrl(newArray);
+        setImageFileArray([...imageFileArray]);
+    }
+
     const handleSubmit = e => {
         const form = e.currentTarget;
         e.preventDefault();
@@ -82,7 +150,11 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
             }, 500);
         }
         else {
-            const body = { ...details, uniqueId: uuid() };
+            const body = {
+                ...details,
+                uniqueId: uuid(),
+                imagesArray: imageFileArray
+            };
             dispatch(addProductToArray('ADD_PRODUCT', body));
         }
         e.preventDefault();
@@ -91,75 +163,99 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
 
 
     return (
-        <>
-            <Modal show={showModal} onHide={handleClose}>
-                <Modal.Header closeButton onClick={handleClose}>
-                    <Modal.Title>Product Details</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form noValidate validated={validated} onSubmit={handleSubmit}>
-                        <FormInputComponent
-                            label='Product name'
-                            type='text'
-                            placeholder='Enter product name'
-                            id='productName'
-                            value={details.productName}
-                            errorMsg='Please enter valid name'
-                            onChange={handleChange}
-                        />
-                        <FormInputComponent
-                            label='Model Name'
-                            type='text'
-                            placeholder='Enter model name'
-                            id='modelName'
-                            value={details.modelName}
-                            errorMsg='Please enter valid model'
-                            onChange={handleChange}
-                        />
-                        <FormInputComponent
-                            label='Price'
-                            type='number'
-                            placeholder='Enter price'
-                            id='price'
-                            value={details.price}
-                            errorMsg='Please enter valid price'
-                            onChange={handleChange}
-                        />
+        <Modal show={showModal} onHide={handleClose}>
+            <Modal.Header closeButton onClick={handleClose}>
+                <Modal.Title>Product Details</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                    <FormInputComponent
+                        label='Product name'
+                        type='text'
+                        placeholder='Enter product name'
+                        id='productName'
+                        value={details.productName}
+                        errorMsg='Please enter valid name'
+                        onChange={handleChange}
+                    />
+                    <FormInputComponent
+                        label='Model Name'
+                        type='text'
+                        placeholder='Enter model name'
+                        id='modelName'
+                        value={details.modelName}
+                        errorMsg='Please enter valid model'
+                        onChange={handleChange}
+                    />
+                    <FormInputComponent
+                        label='Price'
+                        type='number'
+                        placeholder='Enter price'
+                        id='price'
+                        value={details.price}
+                        errorMsg='Please enter valid price'
+                        onChange={handleChange}
+                    />
 
-                        <Form.Select
-                            style={{ marginTop: '2em 0' }}
-                            onChange={handleSelect}
-                            value={isEditing ? details?.companyDetails?.companyName : name}
-                            required>
-                            {
-                                companies.length ? companies.map(company => {
-                                    return (
-                                        <option
-                                            key={company.uniqueId}
-                                            id={company.uniqueId}
-                                            value={company.companyName}
-                                        >
-                                            {company.companyName[0]?.toUpperCase() + company.companyName?.substring(1)}
-                                        </option>
-                                    )
-                                }) : <option value='Select a company'>No companies found !</option>
-                            }
-                        </Form.Select>
-                        <Form.Control.Feedback type="invalid">
-                            Please select a company name
-                        </Form.Control.Feedback>
-                        <div className='my-3'>
-                            <Button variant="primary" type='submit'>
-                                {isEditing ? 'Update' : 'Save Changes'}
-                            </Button>
-                            <Button className='mx-3' variant="secondary" onClick={handleClose}>
-                                Close
-                            </Button>
-                        </div>
-                    </Form>
-                </Modal.Body>
-            </Modal>
-        </>
+                    <Form.Select
+                        style={{ marginTop: '2em 0' }}
+                        onChange={handleSelect}
+                        value={isEditing ? details?.companyDetails?.companyName : name}
+                        required>
+                        {
+                            companies.length ? companies.map(company => {
+                                return (
+                                    <option
+                                        key={company.uniqueId}
+                                        id={company.uniqueId}
+                                        value={company.companyName}
+                                    >
+                                        {company.companyName[0]?.toUpperCase() + company.companyName?.substring(1)}
+                                    </option>
+                                )
+                            }) : <option value='Select a company'>No companies found !</option>
+                        }
+                    </Form.Select>
+
+                    <InputGroup size="sm" className="my-3">
+                        <label className='add_images_label'>
+                            + Add Images
+                            <Form.Control
+                                type='file'
+                                onChange={onSelectFile}
+                                multiple
+                                accept='image/png , image/jpeg, image/webp'
+                                aria-label="Small"
+                                aria-describedby="inputGroup-sizing-sm"
+                                style={{ display: 'none' }}
+                            />
+                        </label>
+                    </InputGroup>
+
+                    <div className="images_container">
+                        {
+                            selectedImagesUrl && selectedImagesUrl.map(image => {
+                                return (
+                                    <div className="image" key={image}>
+                                        <img src={image} height='70' />
+                                        <button onClick={() => deleteImage(image)}>Delete</button>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+
+                    <div className='my-3'>
+                        <Button variant="primary" type='submit'>
+                            {isEditing ? 'Update' : 'Save Changes'}
+                        </Button>
+                        <Button className='mx-3' variant="secondary" onClick={handleClose}>
+                            Close
+                        </Button>
+                    </div>
+                </Form>
+            </Modal.Body>
+        </Modal>
     );
 }
 
