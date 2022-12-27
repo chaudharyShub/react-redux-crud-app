@@ -17,6 +17,7 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
     const [details, setDetails] = useState({});
     const [name, setName] = useState('');
     const [imageFileArray, setImageFileArray] = useState([]);
+    // const [fileData, setFileData] = useState();
 
     const products = selector.productReducer.products;
     const companies = selector.companyReducer.companies;
@@ -108,6 +109,16 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
             else setItems();
         }
     }
+
+    // const onSelectFile = e => {
+    //     const file = e.target.files[0];
+    //     const reader = new FileReader();
+    //     reader.addEventListener("loadend", () => {
+    //         // console.log(reader.result);
+    //         setFileData(reader.result);
+    //     });
+    //     reader.readAsDataURL(file);
+    // }
 
     const deleteImage = image => {
         const index = imageFileArray.findIndex(item => item === image);
@@ -207,7 +218,7 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
                                 type='file'
                                 onChange={onSelectFile}
                                 multiple
-                                accept='image/png , image/jpeg, image/webp'
+                                accept='image/png, image/jpeg, image/webp'
                                 aria-label="Small"
                                 aria-describedby="inputGroup-sizing-sm"
                                 style={{ display: 'none' }}
@@ -230,6 +241,7 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
                                 )
                             })
                         }
+                        {/* <img className="image_preview" src={fileData} /> */}
                     </div>
 
                     <div className='my-3'>
