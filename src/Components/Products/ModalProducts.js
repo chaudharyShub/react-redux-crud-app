@@ -14,7 +14,11 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
     const dispatch = useDispatch();
 
     const [validated, setValidated] = useState(false);
-    const [details, setDetails] = useState({});
+    const [details, setDetails] = useState({
+        productName: '',
+        modelName: '',
+        price: ''
+    });
     const [name, setName] = useState('');
     const [imageFileArray, setImageFileArray] = useState([]);
     // const [fileData, setFileData] = useState();

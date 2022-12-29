@@ -1,0 +1,21 @@
+.custom_form {
+    position: absolute;
+    right: 50%;
+    transform: translate(50%, 50%);
+    border: 1px solid #dbdbdb;
+    width: 35%;
+    padding: 50px;
+    border-radius: 20px;
+}
+
+.spinner-border {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+}
+
+.details_tooltip {
+    position: absolute !important;
+    top: 50% !important;
+    left: 20% !important;
+}

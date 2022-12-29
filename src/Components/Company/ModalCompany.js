@@ -13,7 +13,11 @@ function ModalCompany({ showModal, setShowModal, modalDetails, setModalDetails, 
     const dispatch = useDispatch();
 
     const [validated, setValidated] = useState(false);
-    const [details, setDetails] = useState({});
+    const [details, setDetails] = useState({
+        userName: '',
+        companyName: '',
+        email: ''
+    });
 
     const companies = selector.companyReducer.companies;
 
