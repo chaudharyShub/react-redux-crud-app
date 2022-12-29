@@ -73,7 +73,7 @@ function Login() {
     return (
         adminLogin ?
             <Spinner animation="border" role="status">
-                <span className="visually-hidden">Loading in progress...</span>
+                <span className="visually-hidden">Loading...</span>
             </Spinner>
 
             :
@@ -85,7 +85,7 @@ function Login() {
                     overlay={
                         <Tooltip>
                             email: shubham@gmail.com
-                            password: 12345
+                            password: 123456
                         </Tooltip>
                     }
                 >
