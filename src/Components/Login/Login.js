@@ -75,11 +75,7 @@ function Login() {
     return (
         adminLogin ?
             <Spinner animation="border" role="status">
-<<<<<<< HEAD
                 <span className="visually-hidden">Loading..</span>
-=======
-                <span className="visually-hidden">Loading in progress...</span>
->>>>>>> sample
             </Spinner>
 
             :
