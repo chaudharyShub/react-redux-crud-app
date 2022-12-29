@@ -1,4 +1,4 @@
 export const superAdminCreds = {
     superAdminEmail: 'shubham@gmail.com',
-    superAdminPassword: '12345'
+    superAdminPassword: '123456'
 }
