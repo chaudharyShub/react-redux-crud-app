@@ -6,9 +6,9 @@ import { superAdminCreds } from '../../Utilities/Creds';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Spinner from 'react-bootstrap/Spinner';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
 import './Login.css';
-// import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-// import Tooltip from 'react-bootstrap/Tooltip';
 
 function Login() {
 
@@ -18,10 +18,6 @@ function Login() {
     const { superAdminEmail, superAdminPassword } = superAdminCreds;
     const [validated, setValidated] = useState(false);
     const [showLoader, setShowLoader] = useState(false);
-    // const [inputValue, setInputValue] = useState({
-    //     superAdminEmail: '',
-    //     superAdminPassword: ''
-    // });
     const [inputValue, setInputValue] = useState({});
 
     const handleChange = e => {
@@ -98,18 +94,20 @@ function Login() {
             :
 
             <>
-                {/* <OverlayTrigger
+                <OverlayTrigger
                     key='bottom'
                     placement='bottom'
                     overlay={
                         <Tooltip>
-                            email: shubham@gmail.com
+                            admin: shubham@gmail.com
+                            password: 12345 <br />
+                            user: tata@gmail.com
                             password: 12345
                         </Tooltip>
                     }
                 >
                     <Button className='details_tooltip' variant="link">Login details</Button>
-                </OverlayTrigger> */}
+                </OverlayTrigger>
                 <Form
                     className='mx-auto custom_form'
                     onSubmit={handleSubmit}
