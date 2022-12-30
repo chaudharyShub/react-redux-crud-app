@@ -24,7 +24,7 @@ function Routes() {
                 ]
         },
         {
-            path: '/home',
+            path: '/admin',
             element: <Home />,
             children: [
                 {
@@ -34,6 +34,20 @@ function Routes() {
                 {
                     path: 'company',
                     element: <Company />
+                },
+                {
+                    path: 'products',
+                    element: <Products />
+                }
+            ]
+        },
+        {
+            path: '/user',
+            element: <Home />,
+            children: [
+                {
+                    path: '',
+                    element: <Navigate replace to='products' />
                 },
                 {
                     path: 'products',

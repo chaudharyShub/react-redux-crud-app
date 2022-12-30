@@ -1,12 +1,14 @@
 import { combineReducers } from "redux";
 import { companyReducer } from './companyReducer';
 import { productReducer } from './ProductReducer';
-import { loginReducer } from "./LoginReducer";
+import { adminLoginReducer } from './adminLoginReducer';
+import { userLoginReducer } from './userLoginReducer';
 
 const rootReducer = combineReducers({
     companyReducer,
     productReducer,
-    loginReducer
+    adminLoginReducer,
+    userLoginReducer
 });
 
 export default rootReducer;

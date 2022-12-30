@@ -6,13 +6,15 @@ import { useNavigate } from 'react-router-dom';
 
 function LogoutModal({ showLogoutModal, setShowLogoutModal }) {
 
-    const handleClose = () => setShowLogoutModal(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    
+    const handleClose = () => setShowLogoutModal(false);
 
     const logOutUser = () => {
-        dispatch({ type: 'LOGIN_FALSE' });
         setTimeout(() => {
+            dispatch({ type: 'LOGIN_FALSE' });
+            dispatch({ type: 'USER_LOGIN_FALSE' });
             navigate('/');
         }, 300);
     }
@@ -26,7 +28,7 @@ function LogoutModal({ showLogoutModal, setShowLogoutModal }) {
                 <Button variant="primary" onClick={logOutUser}>
                     Yes
                 </Button>
-                <Button variant="secondary" onClick={handleClose}>
+                <Button variant="danger" onClick={handleClose}>
                     No
                 </Button>
             </Modal.Footer>

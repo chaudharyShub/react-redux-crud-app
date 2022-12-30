@@ -1,18 +1,18 @@
 export const isLoginInitialState = {
-    isLogin: false
+    isAdminLogin: false
 }
 
-export const loginReducer = (state = isLoginInitialState, action) => {
+export const adminLoginReducer = (state = isLoginInitialState, action) => {
     switch (action.type) {
         case 'LOGIN_TRUE':
             localStorage.setItem('isAdminLogin', true);
             return {
                 ...state,
-                isLogin: true
+                isAdminLogin: true
             }
         case 'LOGIN_FALSE':
             localStorage.setItem('isAdminLogin', false);
-            return state
+            return isLoginInitialState;
 
         default:
             return state;

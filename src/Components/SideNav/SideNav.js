@@ -1,7 +1,9 @@
 import './SideNav.css';
 import { NavLink } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 function SideNav() {
+
     return (
         <nav className='sidenav_main'>
             <ul className='side_list_container'>
@@ -9,7 +11,7 @@ function SideNav() {
                 <NavLink to='products'><li>Products</li></NavLink>
             </ul>
         </nav>
-    );
+    )
 }
 
 export default SideNav;

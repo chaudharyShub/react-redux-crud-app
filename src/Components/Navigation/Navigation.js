@@ -9,10 +9,10 @@ function Navigation() {
     const [showLogoutModal, setShowLogoutModal] = useState(false);
 
     return (
-        <Navbar bg="light" expand="lg">
+        <Navbar bg="dark" variant="dark" expand="lg">
             <Container>
                 <Navbar.Brand href="#home">Header</Navbar.Brand>
-                <Button className='mx-3' variant="light" onClick={() => setShowLogoutModal(true)}>
+                <Button variant="light" onClick={() => setShowLogoutModal(true)}>
                     Logout
                 </Button>
             </Container>

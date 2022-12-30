@@ -10,22 +10,28 @@ function App() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const isAdminLogin = localStorage.getItem('isAdminLogin');
-        if (isAdminLogin === null) {
-            dispatch({ type: 'LOGIN_FALSE' });
+    const checkLogin = (adminOrUser, typeTrue, typeFalse, url) => {
+        const a = localStorage.getItem(adminOrUser);
+        if (a === null) {
+            dispatch({ type: typeFalse });
             navigate('/');
             return;
         }
-        if (isAdminLogin === 'true') {
+        if (a === 'true') {
             setTimeout(() => {
-                dispatch({ type: 'LOGIN_TRUE' });
-                navigate('/home');
+                dispatch({ type: typeTrue });
+                navigate(`/${url}`);
             }, 1000);
-        } else {
-            dispatch({ type: 'LOGIN_FALSE' });
+        }
+        else {
+            dispatch({ type: typeFalse });
             navigate('/');
         }
+    }
+
+    useEffect(() => {
+        checkLogin('isAdminLogin', 'LOGIN_TRUE', 'LOGIN_FALSE', 'admin');
+        checkLogin('isUserLogin', 'USER_LOGIN_TRUE', 'USER_LOGIN_FALSE', 'user');
     }, []);
 
     return <Routes />

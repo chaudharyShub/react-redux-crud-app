@@ -6,24 +6,23 @@ import { superAdminCreds } from '../../Utilities/Creds';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Spinner from 'react-bootstrap/Spinner';
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-import Tooltip from 'react-bootstrap/Tooltip';
 import './Login.css';
+// import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+// import Tooltip from 'react-bootstrap/Tooltip';
 
 function Login() {
-
-    // hello world
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const { superAdminEmail, superAdminPassword } = superAdminCreds;
     const [validated, setValidated] = useState(false);
-    const [adminLogin, setAdminLogin] = useState(false);
-    const [inputValue, setInputValue] = useState({
-        superAdminEmail: '',
-        superAdminPassword: ''
-    });
+    const [showLoader, setShowLoader] = useState(false);
+    // const [inputValue, setInputValue] = useState({
+    //     superAdminEmail: '',
+    //     superAdminPassword: ''
+    // });
+    const [inputValue, setInputValue] = useState({});
 
     const handleChange = e => {
         const { value, id } = e.target;
@@ -36,15 +35,27 @@ function Login() {
     useEffect(() => {
         const isAdminLogin = localStorage.getItem('isAdminLogin');
         if (isAdminLogin === 'true') {
-            setAdminLogin(true);
+            setShowLoader(true);
             setTimeout(() => {
                 dispatch({ type: 'LOGIN_TRUE' });
-                navigate('/home');
+                navigate('/admin');
+            }, 1000);
+        }
+        const isUserLogin = localStorage.getItem('isUserLogin');
+        if (isUserLogin === 'true') {
+            setShowLoader(true);
+            setTimeout(() => {
+                dispatch({ type: 'USER_LOGIN_TRUE' });
+                navigate('/user');
             }, 1000);
         }
     }, []);
 
+
     const handleSubmit = e => {
+        const companyCred = JSON.parse(localStorage.getItem('companies'));
+        const a = companyCred.find(item => item.email === inputValue.loginEmail);
+
         const form = e.currentTarget;
         e.preventDefault();
         if (form.checkValidity() === false) {
@@ -53,27 +64,33 @@ function Login() {
             setValidated(true);
             return;
         }
-        if (inputValue.superAdminEmail === superAdminEmail &&
-            inputValue.superAdminPassword === superAdminPassword) {
-            setAdminLogin(true);
+        if (inputValue.loginEmail === superAdminEmail &&
+            inputValue.loginPassword === superAdminPassword) {
+            setShowLoader(true);
             setTimeout(() => {
                 dispatch({ type: 'LOGIN_TRUE' });
-                navigate('/home');
+                navigate('/admin');
+            }, 1000);
+        }
+        else if (inputValue.loginEmail === a.email &&
+            inputValue.loginPassword === a.password) {
+            setShowLoader(true);
+            setTimeout(() => {
+                dispatch({ type: 'USER_LOGIN_TRUE' });
+                navigate('/user');
             }, 1000);
         }
         else {
             alert('Wrong Credentials');
             dispatch({ type: 'LOGIN_FALSE' });
-            setAdminLogin(false);
+            dispatch({ type: 'USER_LOGIN_FALSE' });
+            setShowLoader(false);
         };
-        setInputValue({
-            superAdminEmail: '',
-            superAdminPassword: ''
-        });
+        setInputValue({});
     }
 
     return (
-        adminLogin ?
+        showLoader ?
             <Spinner animation="border" role="status">
                 <span className="visually-hidden">Loading...</span>
             </Spinner>
@@ -81,18 +98,18 @@ function Login() {
             :
 
             <>
-                <OverlayTrigger
+                {/* <OverlayTrigger
                     key='bottom'
                     placement='bottom'
                     overlay={
                         <Tooltip>
                             email: shubham@gmail.com
-                            password: 123456
+                            password: 12345
                         </Tooltip>
                     }
                 >
                     <Button className='details_tooltip' variant="link">Login details</Button>
-                </OverlayTrigger>
+                </OverlayTrigger> */}
                 <Form
                     className='mx-auto custom_form'
                     onSubmit={handleSubmit}
@@ -103,8 +120,8 @@ function Login() {
                         label='Email'
                         type='email'
                         placeholder='Enter email'
-                        id='superAdminEmail'
-                        value={inputValue.superAdminEmail}
+                        id='loginEmail'
+                        value={inputValue.loginEmail}
                         errorMsg='Please enter valid email'
                         onChange={handleChange}
                     />
@@ -112,8 +129,8 @@ function Login() {
                         label='Password'
                         type='password'
                         placeholder='Enter password'
-                        id='superAdminPassword'
-                        value={inputValue.superAdminPassword}
+                        id='loginPassword'
+                        value={inputValue.loginPassword}
                         errorMsg='Please enter password'
                         onChange={handleChange}
                     />

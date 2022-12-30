@@ -10,7 +10,7 @@ function FormInputComponent({ label, type, placeholder, id, errorMsg, onChange, 
                 type={type}
                 placeholder={placeholder}
                 id={id}
-                value={value}
+                value={value || ''}
                 onChange={onChange}
                 autoFocus
                 required />

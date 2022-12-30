@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
-import uuid from 'react-uuid';
 import FormInputComponent from '../Others/FormInputComponent';
-import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { addCompanyToArray } from '../../Redux/actions';
+import uuid from 'react-uuid';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function ModalCompany({ showModal, setShowModal, modalDetails, setModalDetails, isEditing, setIsEditing }) {
@@ -16,7 +16,8 @@ function ModalCompany({ showModal, setShowModal, modalDetails, setModalDetails, 
     const [details, setDetails] = useState({
         userName: '',
         companyName: '',
-        email: ''
+        email: '',
+        password: ''
     });
 
     const companies = selector.companyReducer.companies;
@@ -97,6 +98,15 @@ function ModalCompany({ showModal, setShowModal, modalDetails, setModalDetails, 
                             value={details.email}
                             id='email'
                             errorMsg='Please enter valid email'
+                        />
+                        <FormInputComponent
+                            label='Password'
+                            type='password'
+                            placeholder='Enter password'
+                            onChange={handleChange}
+                            value={details.password}
+                            id='password'
+                            errorMsg='Please enter password'
                         />
                         <Button variant="primary" type='submit'>
                             {isEditing ? 'Update' : 'Save Changes'}

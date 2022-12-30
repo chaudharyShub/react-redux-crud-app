@@ -12,6 +12,7 @@ function Company() {
     const dispatch = useDispatch();
 
     const companies = selector.companyReducer.companies;
+    // console.log('companies', companies);
 
     const [showModal, setShowModal] = useState(false);
     const [modalDetails, setModalDetails] = useState(null);

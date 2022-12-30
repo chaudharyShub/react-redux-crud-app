@@ -12,6 +12,7 @@ function Products() {
     const dispatch = useDispatch();
 
     const products = selector.productReducer.products;
+    // console.log('products', products);
 
     const [showModal, setShowModal] = useState(false);
     const [modalDetails, setModalDetails] = useState(null);
