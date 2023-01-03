@@ -13,6 +13,7 @@ function ModalCompany({ showModal, setShowModal, modalDetails, setModalDetails, 
     const dispatch = useDispatch();
 
     const [validated, setValidated] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const [details, setDetails] = useState({
         userName: '',
         companyName: '',
@@ -101,12 +102,20 @@ function ModalCompany({ showModal, setShowModal, modalDetails, setModalDetails, 
                         />
                         <FormInputComponent
                             label='Password'
-                            type='password'
+                            type={`${showPassword ? 'text' : 'password'}`}
                             placeholder='Enter password'
                             onChange={handleChange}
                             value={details.password}
                             id='password'
                             errorMsg='Please enter password'
+                        />
+                        <Form.Check
+                            type='checkbox'
+                            htmlFor='showHidePassword'
+                            id='showHidePassword'
+                            label={`${showPassword ? 'Hide' : 'Show'} password`}
+                            className='my-3'
+                            onClick={() => setShowPassword(!showPassword)}
                         />
                         <Button variant="primary" type='submit'>
                             {isEditing ? 'Update' : 'Save Changes'}

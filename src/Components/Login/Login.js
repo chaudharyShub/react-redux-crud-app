@@ -18,6 +18,7 @@ function Login() {
     const { superAdminEmail, superAdminPassword } = superAdminCreds;
     const [validated, setValidated] = useState(false);
     const [showLoader, setShowLoader] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const [inputValue, setInputValue] = useState({});
 
     const handleChange = e => {
@@ -85,6 +86,7 @@ function Login() {
         setInputValue({});
     }
 
+
     return (
         showLoader ?
             <Spinner animation="border" role="status">
@@ -125,12 +127,20 @@ function Login() {
                     />
                     <FormInputComponent
                         label='Password'
-                        type='password'
+                        type={`${showPassword ? 'text' : 'password'}`}
                         placeholder='Enter password'
                         id='loginPassword'
                         value={inputValue.loginPassword}
                         errorMsg='Please enter password'
                         onChange={handleChange}
+                    />
+                    <Form.Check
+                        type='checkbox'
+                        htmlFor='showHidePassword'
+                        id='showHidePassword'
+                        label={`${showPassword ? 'Hide' : 'Show'} password`}
+                        className='my-3'
+                        onClick={() => setShowPassword(!showPassword)}
                     />
                     <Button variant="dark" className='mt-2 w-100' type='submit'>
                         Login

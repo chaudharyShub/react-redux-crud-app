@@ -8,7 +8,7 @@ function LogoutModal({ showLogoutModal, setShowLogoutModal }) {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    
+
     const handleClose = () => setShowLogoutModal(false);
 
     const logOutUser = () => {
@@ -24,11 +24,11 @@ function LogoutModal({ showLogoutModal, setShowLogoutModal }) {
             <Modal.Header closeButton>
                 <Modal.Title>Are you sure you want to log out ?</Modal.Title>
             </Modal.Header>
-            <Modal.Footer>
-                <Button variant="primary" onClick={logOutUser}>
+            <Modal.Footer style={{ justifyContent: 'center' }}>
+                <Button variant="primary" style={{ width: '45%' }} onClick={logOutUser}>
                     Yes
                 </Button>
-                <Button variant="danger" onClick={handleClose}>
+                <Button variant="danger" style={{ width: '45%' }} onClick={handleClose}>
                     No
                 </Button>
             </Modal.Footer>

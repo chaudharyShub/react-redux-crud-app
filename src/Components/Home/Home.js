@@ -6,19 +6,13 @@ import SideNav from '../SideNav/SideNav';
 
 function Home() {
 
-    const selector = useSelector(state => state);
-    const isUserLogin = selector.userLoginReducer.isUserLogin;
-
     return (
         <div>
             <div className='app_main'>
-                {
-                    isUserLogin ? null :
-                        <div className="app_sidenav">
-                            <SideNav />
-                        </div>
-                }
-                <div style={{ width: isUserLogin ? '100%' : '' }} className='right_content'>
+                <div className="app_sidenav">
+                    <SideNav />
+                </div>
+                <div className='right_content'>
                     <Navigation />
                     <Outlet />
                 </div>
