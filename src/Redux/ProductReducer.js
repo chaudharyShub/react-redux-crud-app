@@ -1,5 +1,6 @@
 export const productInitialState = {
     products: [],
+    companyEmail: ''
 }
 
 export const productReducer = (state = productInitialState, action) => {
@@ -19,6 +20,13 @@ export const productReducer = (state = productInitialState, action) => {
             return {
                 ...state,
                 products: arr2,
+            }
+
+        case 'COMPANY_DETAILS':
+            localStorage.setItem('companyEmail', JSON.stringify(action.payload));
+            return {
+                ...state,
+                companyEmail: action.payload,
             }
 
         default:

@@ -10,6 +10,7 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import './Login.css';
 
+
 function Login() {
 
     const dispatch = useDispatch();
@@ -74,6 +75,7 @@ function Login() {
             setShowLoader(true);
             setTimeout(() => {
                 dispatch({ type: 'USER_LOGIN_TRUE' });
+                dispatch({ type: 'COMPANY_DETAILS', payload: inputValue.loginEmail });
                 navigate('/user');
             }, 1000);
         }

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Form, InputGroup, Modal } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import uuid from 'react-uuid';
 import FormInputComponent from '../Others/FormInputComponent';
-import 'react-toastify/dist/ReactToastify.css';
 import { addProductToArray } from '../../Redux/actions';
+import 'react-toastify/dist/ReactToastify.css';
 import close from '../../close.png';
+import uuid from 'react-uuid';
 
 
 function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails, isEditing, setIsEditing }) {
@@ -55,7 +55,8 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
                 ...prev,
                 companyDetails: {
                     companyId: companies[0].uniqueId,
-                    companyName: companies[0].companyName
+                    companyName: companies[0].companyName,
+                    companyEmail: companies[0].email
                 }
             }))
         }
@@ -69,16 +70,18 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
         }));
     }
 
-    const handleSelect = e => {
+    const handleCompanySelect = e => {
         const index = e.target.selectedIndex;
         const id = e.target.childNodes[index].id;
         const value = e.target.childNodes[index].value;
+        const email = companies[index].email;
         setName(value);
         setDetails(prev => ({
             ...prev,
             companyDetails: {
                 companyId: id,
-                companyName: value
+                companyName: value,
+                companyEmail: email
             }
         }));
     }
@@ -186,7 +189,7 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
 
                     <Form.Select
                         style={{ marginTop: '2em 0' }}
-                        onChange={handleSelect}
+                        onChange={handleCompanySelect}
                         value={isEditing ? details?.companyDetails?.companyName : name}
                         required>
                         {
@@ -195,6 +198,7 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
                                     <option
                                         key={company.uniqueId}
                                         id={company.uniqueId}
+                                        name={company.email}
                                         value={company.companyName}
                                     >
                                         {company.companyName[0]?.toUpperCase() + company.companyName?.substring(1)}
