@@ -31,7 +31,7 @@ function Products() {
         getProductDataFromLocalStorage();
         getCompanyDataFromLocalStorage(dispatch);
         const companyEmailFromLocalStorage = JSON.parse(localStorage.getItem('companyEmail'));
-        const arr = products.filter(items =>
+        const arr = products.filter(items => 
             items.companyDetails.companyEmail === companyEmailFromLocalStorage
         );
         setSpecificProductsArray(arr);
