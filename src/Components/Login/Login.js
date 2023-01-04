@@ -104,8 +104,6 @@ function Login() {
                     overlay={
                         <Tooltip>
                             admin: shubham@gmail.com
-                            password: 12345 <br />
-                            user: tata@gmail.com
                             password: 12345
                         </Tooltip>
                     }

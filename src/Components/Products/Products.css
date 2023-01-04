@@ -8,6 +8,7 @@
 
 .product_model {
     text-transform: capitalize;
+    cursor: pointer;
 }
 
 .add_images_label {

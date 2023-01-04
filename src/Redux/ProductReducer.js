@@ -1,6 +1,7 @@
 export const productInitialState = {
     products: [],
-    companyEmail: ''
+    companyEmail: '',
+    companyProducts: []
 }
 
 export const productReducer = (state = productInitialState, action) => {

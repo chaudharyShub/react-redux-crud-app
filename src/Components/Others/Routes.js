@@ -4,6 +4,8 @@ import Company from '../Company/Company';
 import Products from '../Products/Products';
 import Home from '../Home/Home';
 import Login from '../Login/Login';
+import ProductsDetails from '../Products/ProductDetails/ProductsDetails';
+
 
 function Routes() {
 
@@ -52,7 +54,11 @@ function Routes() {
                 {
                     path: 'products',
                     element: <Products />
-                }
+                },
+                {
+                    path: 'products/details/:id',
+                    element: <ProductsDetails />
+                },
             ]
         },
     ]);
