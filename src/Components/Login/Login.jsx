@@ -2,21 +2,19 @@ import React, { useEffect, useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import FormInputComponent from '../Others/FormInputComponent';
-import { superAdminCreds } from '../../Utilities/Creds';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import Spinner from 'react-bootstrap/Spinner';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
+import { auth } from '../../lib/firebase';
+import { signInWithEmailAndPassword } from "firebase/auth";
 import './Login.css';
 
 
 function Login() {
 
-    const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const { superAdminEmail, superAdminPassword } = superAdminCreds;
     const [validated, setValidated] = useState(false);
     const [showLoader, setShowLoader] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
@@ -30,30 +28,36 @@ function Login() {
         }));
     }
 
-    useEffect(() => {
-        const isAdminLogin = localStorage.getItem('isAdminLogin');
-        if (isAdminLogin === 'true') {
-            setShowLoader(true);
-            setTimeout(() => {
-                dispatch({ type: 'LOGIN_TRUE' });
-                navigate('/admin');
-            }, 1000);
-        }
-        const isUserLogin = localStorage.getItem('isUserLogin');
-        if (isUserLogin === 'true') {
-            setShowLoader(true);
-            setTimeout(() => {
-                dispatch({ type: 'USER_LOGIN_TRUE' });
-                navigate('/user');
-            }, 1000);
-        }
-    }, []);
+    const checkLogin = () => {
+        const token = JSON.parse(localStorage.getItem('token'));
+        if (token === 'FvMLtjHEGwP1LQMTa0edSxw2pap2') navigate('/admin');
+        return;
+    }
 
+    const logInWithEmailAndPassword = () => {
+        setShowLoader(true);
+        signInWithEmailAndPassword(auth, inputValue.loginEmail, inputValue.loginPassword)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                if (user.uid === 'FvMLtjHEGwP1LQMTa0edSxw2pap2') {
+                    localStorage.setItem('token', JSON.stringify(user.uid));
+                    navigate('/admin');
+                }
+                else if (user.uid) {
+                    localStorage.setItem('token', JSON.stringify(user.uid));
+                    localStorage.setItem('companyEmail', JSON.stringify(user.email));
+                    navigate('/user');
+                }
+                else return;
+                setShowLoader(false);
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+            });
+    }
 
     const handleSubmit = e => {
-        const companyCred = JSON.parse(localStorage.getItem('companies'));
-        const a = companyCred.find(item => item.email === inputValue.loginEmail);
-
         const form = e.currentTarget;
         e.preventDefault();
         if (form.checkValidity() === false) {
@@ -62,32 +66,18 @@ function Login() {
             setValidated(true);
             return;
         }
-        if (inputValue.loginEmail === superAdminEmail &&
-            inputValue.loginPassword === superAdminPassword) {
-            setShowLoader(true);
-            setTimeout(() => {
-                dispatch({ type: 'LOGIN_TRUE' });
-                navigate('/admin');
-            }, 1000);
-        }
-        else if (inputValue.loginEmail === a.email &&
-            inputValue.loginPassword === a.password) {
-            setShowLoader(true);
-            setTimeout(() => {
-                dispatch({ type: 'USER_LOGIN_TRUE' });
-                dispatch({ type: 'COMPANY_DETAILS', payload: inputValue.loginEmail });
-                navigate('/user');
-            }, 1000);
-        }
-        else {
-            alert('Wrong Credentials');
-            dispatch({ type: 'LOGIN_FALSE' });
-            dispatch({ type: 'USER_LOGIN_FALSE' });
-            setShowLoader(false);
-        };
+        logInWithEmailAndPassword()
         setInputValue({});
     }
 
+    useEffect(() => {
+        checkLogin();
+    }, []);
+
+    const item = JSON.parse(localStorage.getItem("token"));
+    if (item) {
+        return <Navigate to="/user" />
+    }
 
     return (
         showLoader ?
@@ -98,18 +88,18 @@ function Login() {
             :
 
             <>
-                <OverlayTrigger
+                {/* <OverlayTrigger
                     key='bottom'
                     placement='bottom'
                     overlay={
                         <Tooltip>
                             admin: shubham@gmail.com
-                            password: 12345
+                            password: 123456
                         </Tooltip>
                     }
                 >
                     <Button className='details_tooltip' variant="link">Login details</Button>
-                </OverlayTrigger>
+                </OverlayTrigger> */}
                 <Form
                     className='mx-auto custom_form'
                     onSubmit={handleSubmit}

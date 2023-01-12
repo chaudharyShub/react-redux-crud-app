@@ -1,5 +1,7 @@
 import React from 'react';
-import { useRoutes, Navigate } from 'react-router-dom';
+import { useRoutes, Navigate, Outlet } from 'react-router-dom';
+
+// implement lazy loading
 import Company from '../Company/Company';
 import Products from '../Products/Products';
 import Home from '../Home/Home';
@@ -11,19 +13,12 @@ function Routes() {
 
     const routes = useRoutes([
         {
-            path: '/',
-            children:
-                [
-                    {
-                        path: '',
-                        element: <Navigate replace to='login' />
-                    },
-                    {
-                        path: 'login',
-                        element: <Login />
-                    },
-
-                ]
+            path: "/",
+            element: <Navigate to="/login" />
+        },
+        {
+            path: "/login",
+            element: <Login />
         },
         {
             path: '/admin',
@@ -39,8 +34,18 @@ function Routes() {
                 },
                 {
                     path: 'products',
-                    element: <Products />
-                }
+                    element: <Outlet />,
+                    children: [
+                        {
+                            path: '',
+                            element: <Products />,
+                        },
+                        {
+                            path: 'details/:id',
+                            element: <ProductsDetails />
+                        },
+                    ]
+                },
             ]
         },
         {
@@ -53,11 +58,17 @@ function Routes() {
                 },
                 {
                     path: 'products',
-                    element: <Products />
-                },
-                {
-                    path: 'products/details/:id',
-                    element: <ProductsDetails />
+                    element: <Outlet />,
+                    children: [
+                        {
+                            path: '',
+                            element: <Products />,
+                        },
+                        {
+                            path: 'details/:id',
+                            element: <ProductsDetails />
+                        },
+                    ]
                 },
             ]
         },

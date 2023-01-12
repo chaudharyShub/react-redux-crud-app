@@ -1,7 +1,7 @@
 import React from 'react';
 import Form from 'react-bootstrap/Form';
 
-function FormInputComponent({ label, type, placeholder, id, errorMsg, onChange, value }) {
+function FormInputComponent({ label, type, placeholder, id, errorMsg, onChange, value, isEditing }) {
 
     return (
         <Form.Group className="mb-3">
@@ -12,6 +12,7 @@ function FormInputComponent({ label, type, placeholder, id, errorMsg, onChange, 
                 id={id}
                 value={value || ''}
                 onChange={onChange}
+                disabled={isEditing && type === 'email' ? true : false}
                 autoFocus
                 required />
             <Form.Control.Feedback type="invalid">

@@ -1,20 +1,18 @@
 import React from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 function LogoutModal({ showLogoutModal, setShowLogoutModal }) {
 
-    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const handleClose = () => setShowLogoutModal(false);
 
     const logOutUser = () => {
         setTimeout(() => {
-            dispatch({ type: 'LOGIN_FALSE' });
-            dispatch({ type: 'USER_LOGIN_FALSE' });
+            localStorage.removeItem("token");
+            localStorage.removeItem("companyEmail");
             navigate('/');
         }, 300);
     }

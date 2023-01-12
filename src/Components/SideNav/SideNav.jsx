@@ -1,11 +1,16 @@
 import './SideNav.css';
 import { NavLink } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 
 function SideNav() {
 
-    const selector = useSelector(state => state);
-    const isUserLogin = selector.userLoginReducer.isUserLogin;
+    const [isUserLogin, setIsUserLogin] = useState(false);
+
+    useEffect(() => {
+        const token = JSON.parse(localStorage.getItem('token'));
+        if (token === "FvMLtjHEGwP1LQMTa0edSxw2pap2") setIsUserLogin(false);
+        else setIsUserLogin(true);
+    }, []);
 
     return (
         <nav className='sidenav_main'>

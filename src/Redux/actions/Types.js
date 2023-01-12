@@ -1,0 +1,2 @@
+export const GET_COMPANY = 'GET_COMPANY'
+export const GET_COMPANY_ERROR = 'GET_COMPANY_ERROR'

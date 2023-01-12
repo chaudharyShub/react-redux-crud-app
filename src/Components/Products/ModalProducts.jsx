@@ -1,40 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Form, InputGroup, Modal } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import FormInputComponent from '../Others/FormInputComponent';
-import { addProductToArray } from '../../Redux/actions';
 import 'react-toastify/dist/ReactToastify.css';
 import close from '../../close.png';
-import uuid from 'react-uuid';
+import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
+import { db } from '../../lib/firebase';
 
 
 function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails, isEditing, setIsEditing }) {
 
     const selector = useSelector(state => state);
-    const dispatch = useDispatch();
-
-    const [validated, setValidated] = useState(false);
-    const [details, setDetails] = useState({
-        productName: '',
-        modelName: '',
-        price: ''
-    });
-    const [name, setName] = useState('');
-    const [imageFileArray, setImageFileArray] = useState([]);
-
-    const products = selector.productReducer.products;
     const companies = selector.companyReducer.companies;
 
+    const [validated, setValidated] = useState(false);
+    const [details, setDetails] = useState({});
+    const [name, setName] = useState('');
+    const [imageFileArray, setImageFileArray] = useState([]);
 
     const handleClose = () => {
         setShowModal(false);
         setIsEditing(false);
         setModalDetails({});
     }
-
-    useEffect(() => {
-        setName(companies[0]?.companyName);
-    }, []);
 
     useEffect(() => {
         if (isEditing) {
@@ -48,15 +36,15 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
     useEffect(() => {
         if (isEditing) {
             setDetails(modalDetails);
-            setImageFileArray(modalDetails.imagesArray);
+            setImageFileArray(JSON.parse(modalDetails.imagesArray));
         }
         else {
             setDetails(prev => ({
                 ...prev,
                 companyDetails: {
-                    companyId: companies[0].uniqueId,
-                    companyName: companies[0].companyName,
-                    companyEmail: companies[0].email
+                    companyId: companies[0]?.id,
+                    companyName: companies[0]?.data.companyName,
+                    companyEmail: companies[0]?.data.email
                 }
             }))
         }
@@ -72,9 +60,9 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
 
     const handleCompanySelect = e => {
         const index = e.target.selectedIndex;
-        const id = e.target.childNodes[index].id;
+        const id = companies[index].id;
         const value = e.target.childNodes[index].value;
-        const email = companies[index].email;
+        const email = companies[index].data.email;
         setName(value);
         setDetails(prev => ({
             ...prev,
@@ -93,7 +81,7 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
         files.forEach(file => {
             const toUplaodImage = {}
             for (let i in file) {
-                toUplaodImage[i] = file[i]
+                toUplaodImage[i] = file[i];
             }
             a.push(toUplaodImage);
         });
@@ -132,20 +120,23 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
             return;
         }
         else if (isEditing) {
-            setTimeout(() => {
-                const index = products.findIndex(items => items.uniqueId === details.uniqueId);
-                products.splice(index, 1, details);
-                const arr = [...products];
-                dispatch(addProductToArray('UPDATE_PRODUCT', arr));
-            }, 500);
+            const docRef = doc(db, 'products', details.id);
+            const body = {
+                ...details,
+                imagesArray: JSON.stringify(imageFileArray)
+            };
+            setDoc(docRef, body)
+                .then(() => '')
+                .catch(err => console.log(err));
         }
         else {
             const body = {
                 ...details,
-                uniqueId: uuid(),
-                imagesArray: imageFileArray
+                imagesArray: JSON.stringify(imageFileArray)
             };
-            dispatch(addProductToArray('ADD_PRODUCT', body));
+            addDoc(collection(db, 'products'), body)
+                .then(() => '')
+                .catch(err => console.log(err));
         }
         e.preventDefault();
         handleClose();
@@ -155,7 +146,9 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
     return (
         <Modal show={showModal} onHide={handleClose}>
             <Modal.Header closeButton onClick={handleClose}>
-                <Modal.Title>Product Details</Modal.Title>
+                <Modal.Title>
+                    {isEditing ? 'Edit Product Details' : 'Product Details'}
+                </Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form noValidate validated={validated} onSubmit={handleSubmit}>
@@ -196,12 +189,12 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
                             companies.length ? companies.map(company => {
                                 return (
                                     <option
-                                        key={company.uniqueId}
-                                        id={company.uniqueId}
-                                        name={company.email}
-                                        value={company.companyName}
+                                        key={company.data?.uniqueId}
+                                        id={company.data?.uniqueId}
+                                        name={company.data?.email}
+                                        value={company.data?.companyName}
                                     >
-                                        {company.companyName[0]?.toUpperCase() + company.companyName?.substring(1)}
+                                        {company.data?.companyName[0].toUpperCase() + company.data?.companyName?.substring(1)}
                                     </option>
                                 )
                             }) : <option value='Select a company'>No companies found !</option>

@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Button, Table, Container } from 'react-bootstrap';
 import ModalCompany from './ModalCompany';
 import { useDispatch, useSelector } from 'react-redux';
-import { addProductToArray, getCompanyDataFromLocalStorage } from '../../Redux/actions';
+import { collection, deleteDoc, doc, getDocs } from 'firebase/firestore';
+import { db } from '../../lib/firebase';
+import Spinner from 'react-bootstrap/Spinner';
 import './Company.css';
 
 
@@ -12,29 +14,46 @@ function Company() {
     const dispatch = useDispatch();
 
     const companies = selector.companyReducer.companies;
-    // console.log('companies', companies);
 
     const [showModal, setShowModal] = useState(false);
     const [modalDetails, setModalDetails] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
 
-    useEffect(() => {
-        getCompanyDataFromLocalStorage(dispatch);
-    }, []);
+    const getCompanyArray = () => {
+        getDocs(collection(db, 'company'))
+            .then(res => {
+                const companies = res.docs.map(doc => {
+                    return {
+                        data: doc.data(),
+                        id: doc.id
+                    }
+                });
+                dispatch({ type: 'UPDATE_COMPANY', payload: companies });
+            })
+            .catch(err => console.log(err));
+    }
 
-    const handleEdit = uniqueId => {
-        const object = companies.find(items => uniqueId === items.uniqueId);
+    useEffect(() => {
+        getCompanyArray();
+    }, [showModal, isEditing]);
+
+    const handleEdit = id => {
+        const object = companies.find(items => id === items.id);
         if (!object) return;
-        setModalDetails(object);
+        setModalDetails({ ...object.data, id: object.id });
         setIsEditing(true);
         setShowModal(true);
     }
 
-    const handleDelete = uniqueId => {
-        const index = companies.findIndex(items => uniqueId === items.uniqueId);
+    const handleDelete = id => {
+        const companyRef = doc(db, 'company', id);
+        deleteDoc(companyRef)
+            .then(() => '')
+            .catch(err => console.log(err));
+
+        const index = companies.findIndex(items => id === items.id);
         companies.splice(index, 1);
-        const a = [...companies];
-        dispatch(addProductToArray('UPDATE_COMPANY', a));
+        dispatch({ type: 'UPDATE_COMPANY', payload: [...companies] });
     }
 
     return (
@@ -43,7 +62,7 @@ function Company() {
                 showModal ? <ModalCompany
                     showModal={showModal}
                     setShowModal={setShowModal}
-                    modalDetails={modalDetails}
+                    modalDetails={modalDetails || {}}
                     isEditing={isEditing}
                     setModalDetails={setModalDetails}
                     setIsEditing={setIsEditing}
@@ -70,21 +89,23 @@ function Company() {
                             <tbody>
                                 {companies.map((company, index) => {
                                     return (
-                                        <tr key={company.uniqueId}>
+                                        <tr key={company.id}>
                                             <td>{index + 1}</td>
-                                            <td className='company_name'>{company.companyName}</td>
-                                            <td className='company_user_name'>{company.userName}</td>
-                                            <td>{company.email}</td>
+                                            <td className='company_name'>{company.data?.companyName}</td>
+                                            <td className='company_user_name'>{company.data?.userName}</td>
+                                            <td>{company.data?.email}</td>
                                             <td className='edit_delete_btn'>
-                                                <Button className='mx-1' variant="warning" onClick={() => handleEdit(company.uniqueId)}>Edit</Button>
-                                                <Button className='mx-1' variant="danger" onClick={() => handleDelete(company.uniqueId)}>Delete</Button>
+                                                <Button className='mx-1' variant="warning" onClick={() => handleEdit(company.id)}>Edit</Button>
+                                                <Button className='mx-1' variant="danger" onClick={() => handleDelete(company.id)}>Delete</Button>
                                             </td>
                                         </tr>
                                     )
                                 })}
                             </tbody>
                         </Table>
-                        : <h2>Nothing to show !!!</h2>
+                        : <Spinner animation="border" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </Spinner>
                 }
             </Container>
         </div>
