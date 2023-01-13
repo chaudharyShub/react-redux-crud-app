@@ -1,12 +1,13 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Table, Container } from 'react-bootstrap';
 import ModalProducts from './ModalProducts';
 import { useNavigate } from 'react-router-dom';
 import Spinner from 'react-bootstrap/Spinner';
-import './Products.css';
-import { collection, deleteDoc, doc, getDocs } from 'firebase/firestore';
+import { deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
+import { getCompanyAndProductArray } from '../Common/CommonFunctions';
+import './Products.css';
 
 
 function Products() {
@@ -15,28 +16,14 @@ function Products() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const products = selector.productReducer.products;
-
     const [showModal, setShowModal] = useState(false);
     const [modalDetails, setModalDetails] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
-    const [isUserLogin, setIsUserLogin] = useState(false);
+    const [isUserLogin, setisUserLogin] = useState(false);
     const [specificProductsArray, setSpecificProductsArray] = useState([]);
+    const [loading, setLoading] = useState(false);
 
-
-    const getProductsArray = () => {
-        getDocs(collection(db, 'products'))
-            .then(res => {
-                const products = res.docs.map(doc => {
-                    return {
-                        data: doc.data(),
-                        id: doc.id
-                    }
-                });
-                dispatch({ type: 'UPDATE_PRODUCT', payload: products });
-            })
-            .catch(err => console.log(err));
-    }
+    const products = selector.productReducer.products;
 
 
     const handleDelete = id => {
@@ -63,13 +50,15 @@ function Products() {
 
     useLayoutEffect(() => {
         const companyEmail = JSON.parse(localStorage.getItem('companyEmail'));
-        if (companyEmail) setIsUserLogin(true);
-        else setIsUserLogin(false);
+        if (companyEmail) setisUserLogin(true);
+        else setisUserLogin(false);
     }, []);
 
 
-    useEffect(() => {
-        getProductsArray();
+    useLayoutEffect(() => {
+        setLoading(true);
+        getCompanyAndProductArray(dispatch, 'products', 'UPDATE_PRODUCT', setLoading);
+        getCompanyAndProductArray(dispatch, 'company', 'UPDATE_COMPANY', null);
     }, [showModal, isEditing]);
 
 
@@ -90,6 +79,7 @@ function Products() {
                     setShowModal={setShowModal}
                     modalDetails={modalDetails}
                     isEditing={isEditing}
+                    isUserLogin={isUserLogin}
                     setModalDetails={setModalDetails}
                     setIsEditing={setIsEditing}
                 /> : null
@@ -102,7 +92,7 @@ function Products() {
                     </Button>
                 </div>
                 {
-                    products.length ?
+                    (!isUserLogin === true ? products.length > 0 : specificProductsArray.length > 0) ?
                         <Table striped bordered hover className='product_table'>
                             <thead>
                                 <tr>
@@ -132,11 +122,13 @@ function Products() {
                                             )
                                         })}
                             </tbody>
-                        </Table>
-                        :
-                        <Spinner animation="border" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </Spinner>
+                        </Table> : (!loading ? <h3>Nothing to show !!!</h3> : null)
+                }
+                {
+                    loading &&
+                    <Spinner animation="border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </Spinner>
                 }
             </Container>
         </div>

@@ -8,13 +8,15 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import { auth } from '../../lib/firebase';
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './Login.css';
+import { notify } from '../Common/CommonFunctions';
 
 
 function Login() {
 
     const navigate = useNavigate();
-
     const [validated, setValidated] = useState(false);
     const [showLoader, setShowLoader] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
@@ -37,7 +39,7 @@ function Login() {
     const logInWithEmailAndPassword = () => {
         setShowLoader(true);
         signInWithEmailAndPassword(auth, inputValue.loginEmail, inputValue.loginPassword)
-            .then((userCredential) => {
+            .then(userCredential => {
                 const user = userCredential.user;
                 if (user.uid === 'FvMLtjHEGwP1LQMTa0edSxw2pap2') {
                     localStorage.setItem('token', JSON.stringify(user.uid));
@@ -51,9 +53,13 @@ function Login() {
                 else return;
                 setShowLoader(false);
             })
-            .catch((error) => {
+            .catch(error => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
+                notify(errorMessage);
+                setTimeout(() => {
+                    navigate('/');
+                }, 100);
             });
     }
 
@@ -88,7 +94,12 @@ function Login() {
             :
 
             <>
-                {/* <OverlayTrigger
+                <ToastContainer
+                    autoClose={3000}
+                    pauseOnHover={false}
+                    theme="colored"
+                />
+                <OverlayTrigger
                     key='bottom'
                     placement='bottom'
                     overlay={
@@ -99,7 +110,7 @@ function Login() {
                     }
                 >
                     <Button className='details_tooltip' variant="link">Login details</Button>
-                </OverlayTrigger> */}
+                </OverlayTrigger>
                 <Form
                     className='mx-auto custom_form'
                     onSubmit={handleSubmit}

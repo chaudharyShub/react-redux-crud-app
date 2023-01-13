@@ -9,7 +9,7 @@ function Navigation() {
     const [showLogoutModal, setShowLogoutModal] = useState(false);
 
     return (
-        <Navbar bg="dark" variant="dark" expand="lg">
+        <Navbar style={{ position: 'sticky', top: 0 }} bg="dark" variant="dark" expand="lg">
             <Container>
                 <Navbar.Brand href="#home">Header</Navbar.Brand>
                 <Button variant="light" onClick={() => setShowLogoutModal(true)}>

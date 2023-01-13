@@ -8,7 +8,7 @@ import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 
 
-function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails, isEditing, setIsEditing }) {
+function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails, isEditing, setIsEditing, isUserLogin }) {
 
     const selector = useSelector(state => state);
     const companies = selector.companyReducer.companies;
@@ -184,20 +184,21 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
                         style={{ marginTop: '2em 0' }}
                         onChange={handleCompanySelect}
                         value={isEditing ? details?.companyDetails?.companyName : name}
+                        disabled={isEditing && isUserLogin ? true : false}
                         required>
                         {
                             companies.length ? companies.map(company => {
                                 return (
                                     <option
-                                        key={company.data?.uniqueId}
-                                        id={company.data?.uniqueId}
+                                        key={company.id}
+                                        id={company.id}
                                         name={company.data?.email}
                                         value={company.data?.companyName}
                                     >
                                         {company.data?.companyName[0].toUpperCase() + company.data?.companyName?.substring(1)}
                                     </option>
                                 )
-                            }) : <option value='Select a company'>No companies found !</option>
+                            }) : <option value='Select a company'>No companies to select</option>
                         }
                     </Form.Select>
 

@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
 import FormInputComponent from '../Others/FormInputComponent';
 import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
+import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail } from "firebase/auth";
 import { auth, db } from '../../lib/firebase';
+import { notify } from '../Common/CommonFunctions';
 import 'react-toastify/dist/ReactToastify.css';
-import { createUserWithEmailAndPassword } from "firebase/auth";
 
 function ModalCompany({ showModal, setShowModal, modalDetails, setModalDetails, isEditing, setIsEditing }) {
 
@@ -18,20 +19,39 @@ function ModalCompany({ showModal, setShowModal, modalDetails, setModalDetails, 
         setModalDetails({});
     }
 
-    const createUser = (auth, email, password) => {
-        createUserWithEmailAndPassword(auth, email, password)
-            .then(userCredential => {
-                const user = userCredential.user;
-            })
-            .catch((error) => {
-                const errorCode = error.code;
-                const errorMessage = error.message;
-            });
+    const handleChange = e => {
+        const { id, value } = e.target;
+        setDetails(prev => ({
+            ...prev,
+            [id]: value,
+        }));
     }
 
     useEffect(() => {
         if (isEditing) setDetails(modalDetails);
     }, [isEditing]);
+
+
+    const createUser = (auth, email, password) => {
+        fetchSignInMethodsForEmail(auth, email).then(signInMethods => {
+            if (signInMethods.length >= 1) {
+                notify('Email already exists !!!');
+                return;
+            }
+            createUserWithEmailAndPassword(auth, email, password)
+                .then(userCredential => {
+                    const user = userCredential.user;
+                })
+                .catch(error => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                });
+            addDoc(collection(db, 'company'), details)
+                .then(() => '')
+                .catch(err => console.log(err));
+        });
+    }
+
 
     const handleSubmit = (event) => {
         const form = event.currentTarget;
@@ -48,22 +68,12 @@ function ModalCompany({ showModal, setShowModal, modalDetails, setModalDetails, 
                 .catch(err => console.log(err));
         }
         else {
-            addDoc(collection(db, 'company'), details)
-                .then(() => '')
-                .catch(err => console.log(err));
             createUser(auth, details.email, details.password);
         }
         event.preventDefault();
         handleClose();
     }
 
-    const handleChange = e => {
-        const { id, value } = e.target;
-        setDetails(prev => ({
-            ...prev,
-            [id]: value,
-        }));
-    }
 
     return (
         <Modal show={showModal} onHide={handleClose}>
