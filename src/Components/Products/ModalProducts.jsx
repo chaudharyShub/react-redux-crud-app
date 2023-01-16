@@ -1,16 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Form, InputGroup, Modal } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import FormInputComponent from '../Others/FormInputComponent';
 import 'react-toastify/dist/ReactToastify.css';
 import close from '../../close.png';
 import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
+import { getCompanyAndProductArray } from '../Common/CommonFunctions';
 
 
-function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails, isEditing, setIsEditing, isUserLogin, companyDropdownDetails }) {
+function ModalProducts({
+    showModal,
+    setShowModal,
+    modalDetails,
+    setModalDetails,
+    isEditing,
+    setIsEditing,
+    isUserLogin,
+    companyDropdownDetails,
+    setLoading
+}) {
+
 
     const selector = useSelector(state => state);
+    const dispatch = useDispatch();
     const companies = selector.companyReducer.companies;
 
     const [validated, setValidated] = useState(false);
@@ -146,6 +159,7 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
                 .then(() => '')
                 .catch(err => console.log(err));
         }
+        getCompanyAndProductArray(dispatch, 'products', 'UPDATE_PRODUCT', setLoading);
         e.preventDefault();
         handleClose();
     }

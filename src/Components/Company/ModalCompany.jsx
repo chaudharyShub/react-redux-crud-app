@@ -4,14 +4,24 @@ import FormInputComponent from '../Others/FormInputComponent';
 import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
 import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail } from "firebase/auth";
 import { auth, db } from '../../lib/firebase';
-import { notify } from '../Common/CommonFunctions';
+import { getCompanyAndProductArray, notify } from '../Common/CommonFunctions';
 import 'react-toastify/dist/ReactToastify.css';
+import { useDispatch } from 'react-redux';
 
-function ModalCompany({ showModal, setShowModal, modalDetails, setModalDetails, isEditing, setIsEditing }) {
+function ModalCompany({
+    showModal,
+    setShowModal,
+    modalDetails,
+    setModalDetails,
+    isEditing,
+    setIsEditing,
+    setLoading
+}) {
 
     const [validated, setValidated] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [details, setDetails] = useState({});
+    const dispatch = useDispatch();
 
     const handleClose = () => {
         setShowModal(false);
@@ -53,7 +63,7 @@ function ModalCompany({ showModal, setShowModal, modalDetails, setModalDetails, 
     }
 
 
-    const handleSubmit = (event) => {
+    const handleSubmit = event => {
         const form = event.currentTarget;
         if (form.checkValidity() === false) {
             event.preventDefault();
@@ -70,6 +80,7 @@ function ModalCompany({ showModal, setShowModal, modalDetails, setModalDetails, 
         else {
             createUser(auth, details.email, details.password);
         }
+        getCompanyAndProductArray(dispatch, 'company', 'UPDATE_COMPANY', setLoading);
         event.preventDefault();
         handleClose();
     }

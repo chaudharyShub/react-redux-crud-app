@@ -25,6 +25,7 @@ function Products() {
     const [companyDropdownDetails, setCompanyDropdownDetails] = useState({});
 
     const products = selector.productReducer.products;
+    const companies = selector.companyReducer.companies;
 
 
     const handleDelete = id => {
@@ -53,14 +54,10 @@ function Products() {
         const companyEmail = JSON.parse(localStorage.getItem('companyEmail'));
         if (companyEmail) setisUserLogin(true);
         else setisUserLogin(false);
-    }, []);
-
-
-    useLayoutEffect(() => {
         setLoading(true);
-        getCompanyAndProductArray(dispatch, 'products', 'UPDATE_PRODUCT', setLoading);
         getCompanyAndProductArray(dispatch, 'company', 'UPDATE_COMPANY', null);
-    }, [showModal, isEditing]);
+        getCompanyAndProductArray(dispatch, 'products', 'UPDATE_PRODUCT', setLoading);
+    }, []);
 
 
     useEffect(() => {
@@ -69,8 +66,18 @@ function Products() {
             items.data.companyDetails.companyEmail === companyEmailFromLocalStorage
         );
         setSpecificProductsArray(arr);
-        const obj = arr[0]?.data?.companyDetails;
-        setCompanyDropdownDetails(obj);
+        if (arr.length <= 0) {
+            const arr = companies?.filter(items => items.data.email === companyEmailFromLocalStorage)
+            const obj = {
+                companyEmail: arr[0]?.data?.email,
+                companyId: arr[0]?.id,
+                companyName: arr[0]?.data?.companyName
+            }
+            setCompanyDropdownDetails(obj);
+        } else {
+            const obj = arr[0]?.data?.companyDetails;
+            setCompanyDropdownDetails(obj);
+        }
     }, [products]);
 
 
@@ -86,6 +93,7 @@ function Products() {
                     setModalDetails={setModalDetails}
                     setIsEditing={setIsEditing}
                     companyDropdownDetails={companyDropdownDetails}
+                    setLoading={setLoading}
                 /> : null
             }
             <Container>

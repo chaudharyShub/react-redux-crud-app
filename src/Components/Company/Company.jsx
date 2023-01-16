@@ -25,7 +25,7 @@ function Company() {
     useLayoutEffect(() => {
         setLoading(true);
         getCompanyAndProductArray(dispatch, 'company', 'UPDATE_COMPANY', setLoading);
-    }, [showModal, isEditing]);
+    }, []);
 
     const handleEdit = id => {
         const object = companies.find(items => id === items.id);
@@ -63,6 +63,7 @@ function Company() {
                         isEditing={isEditing}
                         setModalDetails={setModalDetails}
                         setIsEditing={setIsEditing}
+                        setLoading={setLoading}
                     /> : null
                 }
                 <Container>
