@@ -130,7 +130,7 @@ function ModalCompany({ showModal, setShowModal, modalDetails, setModalDetails, 
                         onClick={() => setShowPassword(!showPassword)}
                     />
                     <Button variant="primary" type='submit'>
-                        {isEditing ? 'Update' : 'Save Changes'}
+                        {isEditing ? 'Update' : 'Save'}
                     </Button>
                     <Button className='mx-3' variant="secondary" onClick={handleClose}>
                         Close

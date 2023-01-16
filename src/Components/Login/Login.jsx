@@ -32,8 +32,12 @@ function Login() {
 
     const checkLogin = () => {
         const token = JSON.parse(localStorage.getItem('token'));
-        if (token === 'FvMLtjHEGwP1LQMTa0edSxw2pap2') navigate('/admin');
-        return;
+        if (token === 'FvMLtjHEGwP1LQMTa0edSxw2pap2') {
+            navigate('/admin');
+        }
+        else if (token) {
+            navigate('/user');
+        }
     }
 
     const logInWithEmailAndPassword = () => {
@@ -68,7 +72,7 @@ function Login() {
         e.preventDefault();
         if (form.checkValidity() === false) {
             e.preventDefault();
-            e.stopPropagation();
+            // e.stopPropagation();
             setValidated(true);
             return;
         }
@@ -80,10 +84,6 @@ function Login() {
         checkLogin();
     }, []);
 
-    const item = JSON.parse(localStorage.getItem("token"));
-    if (item) {
-        return <Navigate to="/user" />
-    }
 
     return (
         showLoader ?
@@ -99,7 +99,7 @@ function Login() {
                     pauseOnHover={false}
                     theme="colored"
                 />
-                <OverlayTrigger
+                {/* <OverlayTrigger
                     key='bottom'
                     placement='bottom'
                     overlay={
@@ -110,7 +110,7 @@ function Login() {
                     }
                 >
                     <Button className='details_tooltip' variant="link">Login details</Button>
-                </OverlayTrigger>
+                </OverlayTrigger> */}
                 <Form
                     className='mx-auto custom_form'
                     onSubmit={handleSubmit}

@@ -8,7 +8,7 @@ import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 
 
-function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails, isEditing, setIsEditing, isUserLogin }) {
+function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails, isEditing, setIsEditing, isUserLogin, companyDropdownDetails }) {
 
     const selector = useSelector(state => state);
     const companies = selector.companyReducer.companies;
@@ -17,6 +17,7 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
     const [details, setDetails] = useState({});
     const [name, setName] = useState('');
     const [imageFileArray, setImageFileArray] = useState([]);
+
 
     const handleClose = () => {
         setShowModal(false);
@@ -38,6 +39,13 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
             setDetails(modalDetails);
             setImageFileArray(JSON.parse(modalDetails.imagesArray));
         }
+        else if (isUserLogin) {
+            setDetails(prev => ({
+                ...prev,
+                companyDetails: companyDropdownDetails
+            }))
+            setName(companyDropdownDetails?.companyName);
+        }
         else {
             setDetails(prev => ({
                 ...prev,
@@ -48,7 +56,7 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
                 }
             }))
         }
-    }, [isEditing]);
+    }, [isEditing, showModal]);
 
     const handleChange = e => {
         const { id, value } = e.target;
@@ -184,7 +192,7 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
                         style={{ marginTop: '2em 0' }}
                         onChange={handleCompanySelect}
                         value={isEditing ? details?.companyDetails?.companyName : name}
-                        disabled={isEditing && isUserLogin ? true : false}
+                        disabled={isEditing || isUserLogin ? true : false}
                         required>
                         {
                             companies.length ? companies.map(company => {
@@ -236,7 +244,7 @@ function ModalProducts({ showModal, setShowModal, modalDetails, setModalDetails,
 
                     <div className='my-3'>
                         <Button variant="primary" type='submit'>
-                            {isEditing ? 'Update' : 'Save Changes'}
+                            {isEditing ? 'Update' : 'Save'}
                         </Button>
                         <Button className='mx-3' variant="secondary" onClick={handleClose}>
                             Cancel

@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Table, Container } from 'react-bootstrap';
 import ModalProducts from './ModalProducts';
@@ -22,6 +22,7 @@ function Products() {
     const [isUserLogin, setisUserLogin] = useState(false);
     const [specificProductsArray, setSpecificProductsArray] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [companyDropdownDetails, setCompanyDropdownDetails] = useState({});
 
     const products = selector.productReducer.products;
 
@@ -62,12 +63,14 @@ function Products() {
     }, [showModal, isEditing]);
 
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         const companyEmailFromLocalStorage = JSON.parse(localStorage.getItem('companyEmail'));
         const arr = products.filter(items =>
             items.data.companyDetails.companyEmail === companyEmailFromLocalStorage
         );
         setSpecificProductsArray(arr);
+        const obj = arr[0]?.data?.companyDetails;
+        setCompanyDropdownDetails(obj);
     }, [products]);
 
 
@@ -82,6 +85,7 @@ function Products() {
                     isUserLogin={isUserLogin}
                     setModalDetails={setModalDetails}
                     setIsEditing={setIsEditing}
+                    companyDropdownDetails={companyDropdownDetails}
                 /> : null
             }
             <Container>

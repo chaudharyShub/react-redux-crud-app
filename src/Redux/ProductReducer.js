@@ -22,3 +22,4 @@ export const productReducer = (state = productInitialState, action) => {
             return state;
     }
 }
+
