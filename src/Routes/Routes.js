@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { lazy } from 'react';
 import { useRoutes, Navigate, Outlet } from 'react-router-dom';
 
-// implement lazy loading
-import Company from '../Company/Company';
-import Products from '../Products/Products';
-import Home from '../Home/Home';
-import Login from '../Login/Login';
-import ProductsDetails from '../Products/ProductDetails/ProductsDetails';
+
+const LazyHome = lazy(() => import('../Pages/Home/Home'));
+const LazyLogin = lazy(() => import('../Pages/Login/Login'));
+const LazyCompany = lazy(() => import('../Pages/Company/Company'));
+const LazyProducts = lazy(() => import('../Pages/Products/Products'));
+const LazyProductsDetails = lazy(() => import('../Pages/Products/ProductDetails/ProductsDetails'));
 
 
 function Routes() {
@@ -18,11 +18,11 @@ function Routes() {
         },
         {
             path: "/login",
-            element: <Login />
+            element: <LazyLogin />
         },
         {
             path: '/admin',
-            element: <Home />,
+            element: <LazyHome />,
             children: [
                 {
                     path: '',
@@ -30,7 +30,7 @@ function Routes() {
                 },
                 {
                     path: 'company',
-                    element: <Company />
+                    element: <LazyCompany />
                 },
                 {
                     path: 'products',
@@ -38,11 +38,11 @@ function Routes() {
                     children: [
                         {
                             path: '',
-                            element: <Products />,
+                            element: <LazyProducts />,
                         },
                         {
-                            path: 'details/:id',
-                            element: <ProductsDetails />
+                            path: ':id',
+                            element: <LazyProductsDetails />
                         },
                     ]
                 },
@@ -50,7 +50,7 @@ function Routes() {
         },
         {
             path: '/user',
-            element: <Home />,
+            element: <LazyHome />,
             children: [
                 {
                     path: '',
@@ -62,11 +62,11 @@ function Routes() {
                     children: [
                         {
                             path: '',
-                            element: <Products />,
+                            element: <LazyProducts />,
                         },
                         {
-                            path: 'details/:id',
-                            element: <ProductsDetails />
+                            path: ':id',
+                            element: <LazyProductsDetails />
                         },
                     ]
                 },
@@ -78,3 +78,4 @@ function Routes() {
 }
 
 export default Routes;
+

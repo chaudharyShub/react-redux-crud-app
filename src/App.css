@@ -19,3 +19,9 @@
 .active {
     background-color: #0d6efd;
 }
+
+.spinner-border {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+}

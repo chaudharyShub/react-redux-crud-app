@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-import Navigation from '../Navigation/Navigation';
-import SideNav from '../SideNav/SideNav';
+import Navigation from '../../Components/Navigation';
+import SideNav from '../../Components/SideNav/SideNav';
 
 function Home() {
 

@@ -1,6 +1,6 @@
 export const productInitialState = {
     products: [],
-    companyEmail: ''
+    userName: ''
 }
 
 export const productReducer = (state = productInitialState, action) => {
@@ -12,10 +12,10 @@ export const productReducer = (state = productInitialState, action) => {
                 products: action.payload
             }
 
-        case 'COMPANY_DETAILS':
+        case 'USER_DETAILS':
             return {
                 ...state,
-                companyEmail: action.payload,
+                userName: action.payload,
             }
 
         default:

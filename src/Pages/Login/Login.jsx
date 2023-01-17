@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import FormInputComponent from '../Others/FormInputComponent';
-import { Navigate, useNavigate } from 'react-router-dom';
+import FormInputComponent from '../../Components/FormInputComponent';
+import { useNavigate } from 'react-router-dom';
 import Spinner from 'react-bootstrap/Spinner';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
@@ -10,8 +10,8 @@ import { auth } from '../../lib/firebase';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { notify } from '../../lib/Common/CommonFunctions';
 import './Login.css';
-import { notify } from '../Common/CommonFunctions';
 
 
 function Login() {
