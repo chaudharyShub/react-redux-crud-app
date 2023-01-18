@@ -3,10 +3,11 @@ import { Button, Form, Modal } from 'react-bootstrap';
 import FormInputComponent from './FormInputComponent';
 import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
 import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail } from "firebase/auth";
-import { getCompanyAndProductArray, notify } from '../lib/Common/CommonFunctions';
 import { auth, db } from '../lib/firebase';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
+import { getCompanyAndProductArray } from '../Redux/actions/action';
 
 function ModalCompany({
     showModal,
@@ -21,6 +22,8 @@ function ModalCompany({
     const [showPassword, setShowPassword] = useState(false);
     const [details, setDetails] = useState({});
     const dispatch = useDispatch();
+
+    const notify = (msg) => toast.error(msg);
 
     const handleClose = () => {
         setShowModal(false);
@@ -58,6 +61,7 @@ function ModalCompany({
             addDoc(collection(db, 'company'), details)
                 .then(() => '')
                 .catch(err => console.log(err));
+            getCompanyAndProductArray(dispatch, 'company', 'UPDATE_COMPANY', null);
         });
     }
 
@@ -75,11 +79,11 @@ function ModalCompany({
             setDoc(docRef, details)
                 .then(() => '')
                 .catch(err => console.log(err));
+            getCompanyAndProductArray(dispatch, 'company', 'UPDATE_COMPANY', null)
         }
         else {
             createUser(auth, details.email, details.password);
         }
-        getCompanyAndProductArray(dispatch, 'company', 'UPDATE_COMPANY');
         event.preventDefault();
         handleClose();
     }

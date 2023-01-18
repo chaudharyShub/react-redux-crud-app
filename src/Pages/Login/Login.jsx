@@ -9,7 +9,7 @@ import { auth } from '../../lib/firebase';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { notify } from '../../lib/Common/CommonFunctions';
+import { toast } from 'react-toastify';
 import Loader from '../../Components/Loader';
 import './Login.css';
 
@@ -21,6 +21,8 @@ function Login() {
     const [showLoader, setShowLoader] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [inputValue, setInputValue] = useState({});
+
+    const notify = (msg) => toast.error(msg);
 
     const handleChange = e => {
         const { value, id } = e.target;

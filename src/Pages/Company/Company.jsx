@@ -1,13 +1,13 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { Button, Table, Container } from 'react-bootstrap';
 import ModalCompany from '../../Components/ModalCompany';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { ToastContainer, toast } from 'react-toastify';
-import { getCompanyAndProductArray } from '../../lib/Common/CommonFunctions';
 import Loader from '../../Components/Loader';
 import './Company.css';
+import { fetchCompany, getCompanyAndProductArray } from '../../Redux/actions/action';
 
 
 function Company() {
@@ -22,7 +22,7 @@ function Company() {
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         setLoading(true);
         getCompanyAndProductArray(dispatch, 'company', 'UPDATE_COMPANY', setLoading);
     }, []);

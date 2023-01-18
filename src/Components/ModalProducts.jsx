@@ -3,10 +3,10 @@ import { Button, Form, InputGroup, Modal } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import FormInputComponent from './FormInputComponent';
 import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
-import { getCompanyAndProductArray } from '../lib/Common/CommonFunctions';
 import 'react-toastify/dist/ReactToastify.css';
 import close from '../Images/close.png';
 import { db } from '../lib/firebase';
+import { getCompanyAndProductArray } from '../Redux/actions/action';
 
 
 function ModalProducts({
@@ -158,7 +158,7 @@ function ModalProducts({
                 .then(() => '')
                 .catch(err => console.log(err));
         }
-        getCompanyAndProductArray(dispatch, 'products', 'UPDATE_PRODUCT');
+        getCompanyAndProductArray(dispatch, 'products', 'UPDATE_PRODUCT', null);
         e.preventDefault();
         handleClose();
     }

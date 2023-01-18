@@ -5,8 +5,8 @@ import ModalProducts from '../../Components/ModalProducts';
 import { useNavigate } from 'react-router-dom';
 import { deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
-import { getCompanyAndProductArray } from '../../lib/Common/CommonFunctions';
 import Loader from '../../Components/Loader';
+import { getCompanyAndProductArray } from '../../Redux/actions/action';
 import './Products.css';
 
 
@@ -55,7 +55,7 @@ function Products() {
         if (companyEmail) setisUserLogin(true);
         else setisUserLogin(false);
         setLoading(true);
-        getCompanyAndProductArray(dispatch, 'company', 'UPDATE_COMPANY', null);
+        getCompanyAndProductArray(dispatch, 'company', 'UPDATE_COMPANY', setLoading);
         getCompanyAndProductArray(dispatch, 'products', 'UPDATE_PRODUCT', setLoading);
     }, []);
 
