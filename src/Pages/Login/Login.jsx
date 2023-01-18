@@ -3,7 +3,6 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import FormInputComponent from '../../Components/FormInputComponent';
 import { useNavigate } from 'react-router-dom';
-import Spinner from 'react-bootstrap/Spinner';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import { auth } from '../../lib/firebase';
@@ -11,6 +10,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { notify } from '../../lib/Common/CommonFunctions';
+import Loader from '../../Components/Loader';
 import './Login.css';
 
 
@@ -32,12 +32,8 @@ function Login() {
 
     const checkLogin = () => {
         const token = JSON.parse(localStorage.getItem('token'));
-        if (token === 'FvMLtjHEGwP1LQMTa0edSxw2pap2') {
-            navigate('/admin');
-        }
-        else if (token) {
-            navigate('/user');
-        }
+        if (token === 'FvMLtjHEGwP1LQMTa0edSxw2pap2') navigate('/admin');
+        else if (token) navigate('/user');
     }
 
     const logInWithEmailAndPassword = () => {
@@ -72,7 +68,6 @@ function Login() {
         e.preventDefault();
         if (form.checkValidity() === false) {
             e.preventDefault();
-            // e.stopPropagation();
             setValidated(true);
             return;
         }
@@ -87,12 +82,8 @@ function Login() {
 
     return (
         showLoader ?
-            <Spinner animation="border" role="status">
-                <span className="visually-hidden">Loading...</span>
-            </Spinner>
-
+            <Loader />
             :
-
             <>
                 <ToastContainer
                     autoClose={3000}

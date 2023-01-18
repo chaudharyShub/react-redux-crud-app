@@ -6,8 +6,8 @@ import { deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { ToastContainer, toast } from 'react-toastify';
 import { getCompanyAndProductArray } from '../../lib/Common/CommonFunctions';
-import './Company.css';
 import Loader from '../../Components/Loader';
+import './Company.css';
 
 
 function Company() {
