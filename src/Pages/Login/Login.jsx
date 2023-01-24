@@ -86,7 +86,7 @@ function Login() {
             <Loader />
             :
             <>
-                {/* <OverlayTrigger
+                <OverlayTrigger
                     key='bottom'
                     placement='bottom'
                     overlay={
@@ -97,7 +97,7 @@ function Login() {
                     }
                 >
                     <Button className='details_tooltip' variant="link">Login details</Button>
-                </OverlayTrigger> */}
+                </OverlayTrigger>
                 <Form
                     className='mx-auto custom_form'
                     onSubmit={handleSubmit}
