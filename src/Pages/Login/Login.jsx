@@ -7,7 +7,6 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import { auth } from '../../lib/firebase';
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { toast } from 'react-toastify';
 import Loader from '../../Components/Loader';
@@ -87,11 +86,6 @@ function Login() {
             <Loader />
             :
             <>
-                <ToastContainer
-                    autoClose={3000}
-                    pauseOnHover={false}
-                    theme="colored"
-                />
                 {/* <OverlayTrigger
                     key='bottom'
                     placement='bottom'
